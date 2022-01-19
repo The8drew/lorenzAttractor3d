@@ -87,7 +87,7 @@ function arrayfill(a){
     array_balls.push(newBall);
     };
 };
-arrayfill(100);
+arrayfill(50);
 
 
 //letter
