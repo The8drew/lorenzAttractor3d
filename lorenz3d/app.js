@@ -17,9 +17,6 @@ const rho = 28;
 const beta = 8/3;
 //parameters
 let time = 0.0001;
-let scale = 9;
-
-let tails = true;
 
 let color_list = [
                 "#32535f",
@@ -40,8 +37,8 @@ constructor(x, y, z, color) {
         //wireframe: true
     });
 
-    this.head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5,2), this.material);
-    this.line = new THREE.Line(0, new THREE.LineBasicMaterial({color: color, linewidth: 2}));
+    this.head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5,0), this.material);
+    this.line = new THREE.Line(0, new THREE.LineBasicMaterial({color: color}));
     scene.add(this.head, this.line);
     //mesh end
 
@@ -50,7 +47,7 @@ constructor(x, y, z, color) {
 
     upball(){
     this.list.push(new THREE.Vector3(this.x, this.y, this.z-25));
-    if (this.list.length > 50){
+    if (this.list.length > 30){
         this.list.shift();
     }
     let dy = (this.x * (rho - this.z) - this.y) * time;
@@ -82,7 +79,7 @@ const array_balls = [];
 //a = new ball(0.03, 0, 0, color_list[0]);
 
 function arrayfill(a){
-    for(let itr = 0; itr < a; itr++){
+    for(let i = 0; i < a; i++){
     newBall = new ball((Math.random()-0.5)*300, (Math.random()-0.5)*300, Math.random()*200-100, color_list[Math.floor(Math.random()*(color_list.length))])
     array_balls.push(newBall);
     };
@@ -103,18 +100,18 @@ loader.load("./letter/lorenzA.gltf", (a)=>{
 
 //stars start
 const particlegeometry = new THREE.BufferGeometry;
-const particlesamount = 3000;
+const particlesamount = 5000;
 
 const particlesarray = new Float32Array(particlesamount * 3);
 
 
 for(let i = 0; i < particlesamount*3; i++){
-    particlesarray[i] = (Math.random() - 0.5)*200
+    particlesarray[i] = (Math.random() - 0.5)*300
 }
 
 particlegeometry.setAttribute("position", new THREE.BufferAttribute(particlesarray, 3))
 
-const particles = new THREE.Points(particlegeometry, new THREE.PointsMaterial({color: "#234a5e",size: (Math.random()*0.4)}));
+const particles = new THREE.Points(particlegeometry, new THREE.PointsMaterial({color: "#234a5e",size: (Math.random()*0.5)+0.1}));
 scene.add(particles);
 //stars end
 
@@ -123,30 +120,25 @@ scene.add(particles);
 const gridHelper = new THREE.GridHelper(100, 10, "#0d2531", "#0d2531");
 scene.add(gridHelper);
 
-let frame = 0;
+
 function animate(){
     requestAnimationFrame(animate);
     //update
     
-
     array_balls.forEach( x => {
         x.bigupdate();
     });
 
-    scene.rotation.y += 0.001;
-
-    frame += 1
-    letter.position.set(-50,(Math.sin(frame/20)+2)*1.5,-50);
+    scene.rotation.y += 0.008;
 
     if (time < 0.005){
-        time += 0.000007;
+        time += 0.00001;
     }
 
     if (dist > 30){
         dist -= 0.1;
         camera.position.set(dist*Math.sin(alpha),10,dist*Math.cos(alpha));
     }
-    //
     controls.update();
     renderer.render(scene, camera);
 };
